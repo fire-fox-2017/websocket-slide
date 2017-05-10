@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>firebase</title>
+    <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+    <script src="https://unpkg.com/vue"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    
+  </head>
+  <body>
+    <div id="app">
+      <div class="container">
+        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="false">
+          <div class="carousel-inner" role="listbox">
+            <div class="carousel-item active">
+              <img class="d-block img-fluid" src="http://www.wallpaperhive.net/resize.php?id=1316" alt="First slide">
+              <div class="carousel-caption d-none d-md-block">
+                <h3>First Slide</h3>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img class="d-block img-fluid" src="http://1.bp.blogspot.com/-IbKerqzB340/UhdtFczVyyI/AAAAAAAAuCc/mBARjoNwm3k/s1600/Flowers+scenery+photos.+(1).jpg" alt="Second slide">
+              <div class="carousel-caption d-none d-md-block">
+                <h3>Second Slide</h3>
+              </div>
+            </div>
+            <div class="carousel-item">
+              <img class="d-block img-fluid" src="https://trustedpartner.cachefly.net/images/library/PalmBeachAtlanticUniversity2015/HomepageMedia/2107182E-0627-E784-74F42576BBFE1152/1A_BB_Kayak_on_the_Beach_Rotator_8_12_16_OJMAEXLN.jpg" alt="Third slide">
+              <div class="carousel-caption d-none d-md-block">
+                <h3>Third Slide</h3>
+              </div>
+            </div>
+          </div>
+          <a id="prev" class="carousel-control-prev" href="#carouselExampleControls" role="button" @click="change(1,'prev')">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a id="next" class="carousel-control-next" href="#carouselExampleControls" role="button" @click="change(1,'next')">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </body>
+  <script>
+    var app = new Vue({
+      el: '#app',
+      data:{
+        
+      },
+      created: function(){
+        var config = {
+          apiKey: "AIzaSyD_gUjydNFn8w3onQdH068eCVanhO7GgO4",
+          authDomain: "test-c75ac.firebaseapp.com",
+          databaseURL: "https://test-c75ac.firebaseio.com",
+          projectId: "test-c75ac",
+          storageBucket: "test-c75ac.appspot.com",
+          messagingSenderId: "7046910813"
+        };
+        firebase.initializeApp(config);
+        $('.carousel').carousel({
+        interval: false
+      })
+      var userRef = firebase.database().ref('command/' + '1');
+      userRef.on('value', function(snapshot) {
+        if(snapshot.val()){
+          if(snapshot.val().command === "prev"){
+            $('.carousel').carousel('prev')
+            firebase.database().ref('command/' + '1').remove()
+          }
+          if(snapshot.val().command === "next"){
+            $('.carousel').carousel('next')
+            firebase.database().ref('command/' + '1').remove()
+          }
+        }
+        console.log(snapshot.val());
+      });
+      },
+      methods: {
+        change: function(userId, com){
+          firebase.database().ref('command/' + userId).set({
+            command: com
+          });
+          console.log(com)
+        }
+      }
+    })
+  </script>
+</html>
