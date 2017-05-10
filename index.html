@@ -1,0 +1,76 @@
+ <!DOCTYPE html>
+ <html>
+ 
+ <head>
+     <meta charset="utf-8">
+     <title>WebSocket</title>
+     <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+     <script src="https://www.gstatic.com/firebasejs/3.9.0/firebase.js"></script>
+   <script src="https://unpkg.com/vue"></script>
+ </head>
+ 
+ <body>
+    <div id=app>
+    <nav class="navbar text-center"><button v-on:click="prev">Previous Slide </button> <button v-on:click="next">Next Slide </button></nav>
+     <div class="col-md-10">
+       <img v-bind:src=`img/${slide[index]}` alt="" style="width : 100%; height: 100%;" />
+     </div>
+   </div>
+ </body>
+ <script>
+ 	var config = {
+  apiKey: "AIzaSyBVNc5IWxsjhsjlulEQhe5uhOZEI4pGTxs",
+  authDomain: "slide-presentation-3e337.firebaseapp.com",
+  databaseURL: "https://slide-presentation-3e337.firebaseio.com",
+  storageBucket: "slide-presentation-3e337.appspot.com",
+};
+
+firebase.initializeApp(config);
+
+var database = firebase.database();
+console.log(database)
+function changeSlide(slideId, urlImg) {
+  firebase.database().ref('slide/' + slideId).set({
+    index : urlImg
+  });
+}
+ var app = new Vue({
+   el: '#app',
+   data:{
+     index : 0,
+     slide : ['1.jpg','2.jpg','3.jpg','4.jpg','5.jpg','6.jpg','7.jpg']
+   },
+   methods:{
+     next: function(){
+       var data = this.slide.length
+       if(this.index >= data - 1){
+         this.index = data - 1
+       } else {
+        this.index += 1
+       }
+       changeSlide('001', this.index)
+       console.log(this.index);
+     },
+     prev: function(){
+       if(this.index > 0){
+         this.index--
+       } else {
+         this.index = 0
+       }
+       changeSlide('001', this.index)
+       console.log(this.index);
+     }
+   },
+   created: function(){
+     // changeSlide('001', this.index)
+     console.log(changeSlide('001', this.index));
+      var slideId = '001'
+var readSlide = firebase.database().ref('slide/'+slideId);
+  readSlide.on('value', function(data) {
+  app.index = data.val().index
+  console.log('vue', app.index);
+}); 
+   }
+ })
+ </script>
+ </html> 
